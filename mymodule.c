@@ -7,23 +7,23 @@
 #include <linux/string.h>
  
 static struct kobject *example_kobject;
-static int test;
+static int buffer;
  
 static ssize_t foo_show(struct kobject *kobj, struct kobj_attribute *attr,
                       char *buf)
 {
-        return sprintf(buf, "%d\n", test);
+        return sprintf(buf, "%d\n", buffer);
 }
  
 static ssize_t foo_store(struct kobject *kobj, struct kobj_attribute *attr,
                       const char *buf, size_t count)
 {
-        sscanf(buf, "%du", &test);
+        sscanf(buf, "%du", &buffer);
         return count;
 }
  
  
-static struct kobj_attribute foo_attribute =__ATTR(test, 0660, foo_show,
+static struct kobj_attribute foo_attribute =__ATTR(buffer, 0660, foo_show,
                                                    foo_store);
  
 static int __init sys_init (void)
@@ -32,14 +32,14 @@ static int __init sys_init (void)
  
         pr_debug("Module initialized successfully \n");
  
-        example_kobject = kobject_create_and_add("systest",
+        example_kobject = kobject_create_and_add("sysfs_connection",
                                                  kernel_kobj);
         if(!example_kobject)
                 return -ENOMEM;
  
         error = sysfs_create_file(example_kobject, &foo_attribute.attr);
         if (error) {
-                pr_debug("failed to create the foo file in /sys/kernel/systest \n");
+                pr_debug("failed to create the foo file in /sys/kernel/sysfs_connection \n");
         }
  
         return error;
